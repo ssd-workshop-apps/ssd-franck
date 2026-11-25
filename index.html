@@ -4,22 +4,119 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
-    <title>My app</title>
+    <title>Personal Movie Tracker</title>
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="style.css">
     <script src="workshop-data.js" defer></script>
     <script src="app.js" defer></script>
   </head>
   <body>
+    <header class="app-header">
+      <h1>Personal Movie Tracker</h1>
+      <nav class="tab-nav" aria-label="Screens">
+        <button type="button" class="tab-btn active" data-screen="movie-list">Movie List</button>
+        <button type="button" class="tab-btn" data-screen="search-films">Search Films</button>
+      </nav>
+    </header>
+
     <main>
-      <h1>My app</h1>
-      <p>This is the starting point. The app described in SPEC.md will be built here.</p>
-      <section class="card" aria-labelledby="counter-title">
-        <h2 id="counter-title">Shared counter</h2>
-        <p>Everyone who opens this app sees the same number.</p>
-        <p class="count"><span id="count">0</span> presses</p>
-        <button id="press" type="button">Press</button>
-        <p id="status" class="status" role="status"></p>
+      <!-- Movie List Screen -->
+      <section id="screen-movie-list" class="screen active" aria-labelledby="movie-list-heading">
+        <h2 id="movie-list-heading" class="sr-only">Movie List</h2>
+        <div class="filter-bar" role="group" aria-label="Filter and sort">
+          <button type="button" class="filter-btn active" data-filter="all">All</button>
+          <button type="button" class="filter-btn" data-filter="watched">Watched</button>
+          <button type="button" class="filter-btn" data-filter="unwatched">Unwatched</button>
+          <button type="button" class="filter-btn" data-sort="rating">By Rating</button>
+          <button type="button" class="filter-btn" data-sort="date">By Date</button>
+        </div>
+        <p id="list-status" class="status" role="status"></p>
+        <ul id="movie-list" class="movie-list" aria-label="Your films"></ul>
+        <p id="empty-msg" class="empty-msg" hidden>No films yet. Search for a film to add it.</p>
+      </section>
+
+      <!-- Search Films Screen -->
+      <section id="screen-search-films" class="screen" aria-labelledby="search-films-heading">
+        <h2 id="search-films-heading">Search Films</h2>
+        <form id="search-form" class="search-form">
+          <label for="search-input" class="sr-only">Film title</label>
+          <input id="search-input" type="search" placeholder="Type a film title…" autocomplete="off">
+          <button type="submit" class="btn-primary">Search</button>
+        </form>
+        <p id="search-status" class="status" role="status"></p>
+        <ul id="search-results" class="movie-list" aria-label="Search results"></ul>
+      </section>
+
+      <!-- Add Film Screen -->
+      <section id="screen-add-film" class="screen" aria-labelledby="add-film-heading">
+        <h2 id="add-film-heading">Add Film</h2>
+        <div id="add-film-content" class="detail-content">
+          <div class="detail-poster-wrap">
+            <img id="add-poster" src="" alt="" class="detail-poster">
+            <div id="add-no-poster" class="no-poster" hidden>No poster</div>
+          </div>
+          <div class="detail-info">
+            <p id="add-title" class="detail-title"></p>
+            <p id="add-desc" class="detail-desc"></p>
+          </div>
+        </div>
+        <div class="add-actions">
+          <button type="button" id="confirm-add-btn" class="btn-primary">Add to My List</button>
+          <button type="button" id="cancel-add-btn" class="btn-secondary">Cancel</button>
+        </div>
+        <p id="add-status" class="status" role="status"></p>
+      </section>
+
+      <!-- Film Detail Screen -->
+      <section id="screen-film-detail" class="screen" aria-labelledby="film-detail-heading">
+        <button type="button" id="back-btn" class="btn-back">
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4l-6 6 6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back
+        </button>
+        <h2 id="film-detail-heading" class="sr-only">Film Detail</h2>
+        <div class="detail-content">
+          <div class="detail-poster-wrap">
+            <img id="detail-poster" src="" alt="" class="detail-poster">
+            <div id="detail-no-poster" class="no-poster" hidden>No poster</div>
+          </div>
+          <div class="detail-info">
+            <p id="detail-title" class="detail-title"></p>
+            <p id="detail-added" class="detail-meta"></p>
+          </div>
+        </div>
+        <form id="detail-form" class="detail-form">
+          <fieldset class="rating-fieldset">
+            <legend>Your rating</legend>
+            <div class="star-row" role="group" aria-label="Star rating">
+              <button type="button" class="star-btn" data-value="1" aria-label="1 star">&#9733;</button>
+              <button type="button" class="star-btn" data-value="2" aria-label="2 stars">&#9733;</button>
+              <button type="button" class="star-btn" data-value="3" aria-label="3 stars">&#9733;</button>
+              <button type="button" class="star-btn" data-value="4" aria-label="4 stars">&#9733;</button>
+              <button type="button" class="star-btn" data-value="5" aria-label="5 stars">&#9733;</button>
+            </div>
+          </fieldset>
+          <div class="form-group">
+            <label for="review-input">Your review</label>
+            <textarea id="review-input" rows="4" placeholder="Write your thoughts…"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="watch-date-input">Date watched</label>
+            <input type="date" id="watch-date-input">
+          </div>
+          <div class="form-group watched-toggle">
+            <label class="toggle-label">
+              <input type="checkbox" id="watched-checkbox">
+              Watched
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Save</button>
+            <button type="button" id="delete-btn" class="btn-danger">Remove Film</button>
+          </div>
+        </form>
+        <p id="detail-status" class="status" role="status"></p>
       </section>
     </main>
   </body>
