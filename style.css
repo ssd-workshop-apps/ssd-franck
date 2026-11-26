@@ -296,15 +296,13 @@ main {
   overflow: hidden;
 }
 
-/* Search form */
-.search-form {
-  display: flex;
-  gap: 0.5rem;
+/* Search bar on main page */
+.search-bar {
   margin-bottom: 1rem;
 }
 
-.search-form input {
-  flex: 1;
+.search-bar input {
+  width: 100%;
   font: inherit;
   font-size: 1rem;
   min-height: 2.75rem;
@@ -315,9 +313,14 @@ main {
   color: var(--text);
 }
 
-.search-form input:focus-visible {
+.search-bar input:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* Search results list spacing */
+.search-results-list {
+  margin-bottom: 1.25rem;
 }
 
 /* Detail */

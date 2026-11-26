@@ -2,7 +2,7 @@
 
 ```mermaid
 flowchart TD
-  home[Movie List] -->|search for a film| search[Search Films]
+  home[Movie List] -->|types in search bar| search[(Search Results)]
   search -->|picks a film| confirm[Add Film]
   confirm -->|saves to list| movies[(My Films)]
   movies -->|shows all films| home
@@ -12,12 +12,11 @@ flowchart TD
 ```
 
 ## What it does
-This app is a personal movie tracker for one person. It keeps a single list of all films you have added, whether watched or not yet watched. You can filter the list by watched status, rating, and date added. Clicking any film opens its detail view where you can read your own review and log or update your rating, review, and watch date. Movie posters and film details come from Wikipedia, and the app shows a friendly message if Wikipedia does not answer.
+This app is a personal movie tracker for one person. It has a single page with a search bar at the top and your full film list below. As you type, matching films appear instantly so you can pick one and add it. You can filter your list by watched status, rating, and date added. Clicking any film opens its detail view where you can log or update your rating, review, and watch date. Movie posters and film details come from Wikipedia, and the app shows a friendly message if Wikipedia does not answer.
 
 ## Screens
-- Movie List: your full list of films shown as cards with poster, title, rating, and review at a glance. Filter buttons let you show only watched or unwatched films, sort by rating, or sort by date added.
-- Search Films: a search bar where you type a film title and see matching results with posters and titles from Wikipedia, so you can pick the right one quickly.
-- Add Film: confirms the film you picked and adds it to your list as unwatched, saving the title and poster.
+- Movie List: the main page with a live search bar at the top that shows matching results with posters and titles from Wikipedia as you type, so you can pick a film without pressing any button. Below the search results sits your full list of films as cards with poster, title, rating, and review at a glance. Filter buttons let you show only watched or unwatched films, sort by rating, or sort by date added.
+- Add Film: a small confirmation step that adds the film you picked to your list as unwatched, saving the title and poster.
 - Film Detail: shows the full poster, title, your rating out of five stars, your written review, and the date you watched it. You can edit and save these details here.
 
 ## Data it keeps

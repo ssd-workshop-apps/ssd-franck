@@ -13,7 +13,6 @@ let currentRating = 0; // star rating being edited in detail form
 const STORAGE_KEY = "movie-watchlist-v1";
 
 // ----- DOM references -----
-const tabBtns = document.querySelectorAll(".tab-btn");
 const screens = document.querySelectorAll(".screen");
 
 const movieListEl = document.getElementById("movie-list");
@@ -22,7 +21,6 @@ const emptyMsg = document.getElementById("empty-msg");
 const filterBtns = document.querySelectorAll(".filter-btn[data-filter]");
 const sortBtns = document.querySelectorAll(".filter-btn[data-sort]");
 
-const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-input");
 const searchStatus = document.getElementById("search-status");
 const searchResults = document.getElementById("search-results");
@@ -70,19 +68,7 @@ function showScreen(id) {
   screens.forEach(function (s) {
     s.classList.toggle("active", s.id === "screen-" + id);
   });
-  tabBtns.forEach(function (b) {
-    b.classList.toggle("active", b.dataset.screen === id);
-  });
 }
-
-tabBtns.forEach(function (btn) {
-  btn.addEventListener("click", function () {
-    showScreen(btn.dataset.screen);
-    if (btn.dataset.screen === "movie-list") {
-      renderList();
-    }
-  });
-});
 
 // ----- Load / Save films -----
 async function loadFilms() {
@@ -207,12 +193,24 @@ sortBtns.forEach(function (btn) {
 });
 
 // ----- Search Films -----
-searchForm.addEventListener("submit", async function (e) {
-  e.preventDefault();
+let searchTimer = null;
+
+searchInput.addEventListener("input", function () {
+  clearTimeout(searchTimer);
   const query = searchInput.value.trim();
-  if (!query) return;
-  searchResults.innerHTML = "";
+  if (!query) {
+    searchResults.innerHTML = "";
+    searchResults.hidden = true;
+    searchStatus.textContent = "";
+    return;
+  }
   searchStatus.textContent = "Searching…";
+  searchTimer = setTimeout(function () { runSearch(query); }, 300);
+});
+
+async function runSearch(query) {
+  searchResults.innerHTML = "";
+  searchResults.hidden = true;
 
   let titles = [];
   const controller = new AbortController();
@@ -319,8 +317,10 @@ searchForm.addEventListener("submit", async function (e) {
 
   if (shown === 0) {
     searchStatus.textContent = "No film results found. Try a different title.";
+  } else {
+    searchResults.hidden = false;
   }
-});
+}
 
 // ----- Add Film Screen -----
 function showAddScreen(film) {
@@ -339,7 +339,6 @@ function showAddScreen(film) {
     addNoPoster.hidden = false;
   }
   showScreen("add-film");
-  tabBtns.forEach(function (b) { b.classList.remove("active"); });
 }
 
 confirmAddBtn.addEventListener("click", async function () {
@@ -363,9 +362,10 @@ confirmAddBtn.addEventListener("click", async function () {
     pendingFilm = null;
     setTimeout(function () {
       showScreen("movie-list");
-      tabBtns.forEach(function (b) {
-        b.classList.toggle("active", b.dataset.screen === "movie-list");
-      });
+      searchInput.value = "";
+      searchResults.innerHTML = "";
+      searchResults.hidden = true;
+      searchStatus.textContent = "";
       renderList();
     }, 600);
   } catch (err) {
@@ -378,10 +378,7 @@ confirmAddBtn.addEventListener("click", async function () {
 
 cancelAddBtn.addEventListener("click", function () {
   pendingFilm = null;
-  showScreen("search-films");
-  tabBtns.forEach(function (b) {
-    b.classList.toggle("active", b.dataset.screen === "search-films");
-  });
+  showScreen("movie-list");
 });
 
 // ----- Film Detail Screen -----
@@ -410,7 +407,6 @@ function showDetailScreen(film) {
   watchedCheckbox.checked = film.watched || false;
 
   showScreen("film-detail");
-  tabBtns.forEach(function (b) { b.classList.remove("active"); });
 }
 
 function updateStars(value) {
@@ -437,9 +433,6 @@ starBtns.forEach(function (btn) {
 backBtn.addEventListener("click", function () {
   openFilmId = null;
   showScreen("movie-list");
-  tabBtns.forEach(function (b) {
-    b.classList.toggle("active", b.dataset.screen === "movie-list");
-  });
   renderList();
 });
 
@@ -477,9 +470,6 @@ deleteBtn.addEventListener("click", async function () {
     await workshopData.set(STORAGE_KEY, films);
     openFilmId = null;
     showScreen("movie-list");
-    tabBtns.forEach(function (b) {
-      b.classList.toggle("active", b.dataset.screen === "movie-list");
-    });
     renderList();
   } catch (err) {
     detailStatus.textContent = "Could not remove: " + err.message;

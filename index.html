@@ -13,16 +13,18 @@
   <body>
     <header class="app-header">
       <h1>Personal Movie Tracker</h1>
-      <nav class="tab-nav" aria-label="Screens">
-        <button type="button" class="tab-btn active" data-screen="movie-list">Movie List</button>
-        <button type="button" class="tab-btn" data-screen="search-films">Search Films</button>
-      </nav>
     </header>
 
     <main>
       <!-- Movie List Screen -->
       <section id="screen-movie-list" class="screen active" aria-labelledby="movie-list-heading">
         <h2 id="movie-list-heading" class="sr-only">Movie List</h2>
+        <div class="search-bar">
+          <label for="search-input" class="sr-only">Search for a film</label>
+          <input id="search-input" type="search" placeholder="Search for a film to add…" autocomplete="off">
+        </div>
+        <p id="search-status" class="status" role="status"></p>
+        <ul id="search-results" class="movie-list search-results-list" aria-label="Search results" hidden></ul>
         <div class="filter-bar" role="group" aria-label="Filter and sort">
           <button type="button" class="filter-btn active" data-filter="all">All</button>
           <button type="button" class="filter-btn" data-filter="watched">Watched</button>
@@ -32,19 +34,7 @@
         </div>
         <p id="list-status" class="status" role="status"></p>
         <ul id="movie-list" class="movie-list" aria-label="Your films"></ul>
-        <p id="empty-msg" class="empty-msg" hidden>No films yet. Search for a film to add it.</p>
-      </section>
-
-      <!-- Search Films Screen -->
-      <section id="screen-search-films" class="screen" aria-labelledby="search-films-heading">
-        <h2 id="search-films-heading">Search Films</h2>
-        <form id="search-form" class="search-form">
-          <label for="search-input" class="sr-only">Film title</label>
-          <input id="search-input" type="search" placeholder="Type a film title…" autocomplete="off">
-          <button type="submit" class="btn-primary">Search</button>
-        </form>
-        <p id="search-status" class="status" role="status"></p>
-        <ul id="search-results" class="movie-list" aria-label="Search results"></ul>
+        <p id="empty-msg" class="empty-msg" hidden>No films yet. Search for a film above to add it.</p>
       </section>
 
       <!-- Add Film Screen -->
