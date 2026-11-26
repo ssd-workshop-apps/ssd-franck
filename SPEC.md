@@ -16,7 +16,7 @@ This app is a personal movie tracker for one person. It has a single page with a
 
 ## Screens
 - Movie List: the main page with a live search bar at the top that shows matching results with posters and titles from Wikipedia as you type, so you can pick a film without pressing any button. Below the search results sits your full list of films as cards with poster, title, rating, and review at a glance. Filter buttons let you show only watched or unwatched films, sort by rating, or sort by date added.
-- Add Film: a small confirmation step that adds the film you picked to your list as unwatched, saving the title and poster.
+- Add Film: a click on one of the films shown on the live search directly adds that film to your list as unwatched, saving the title and poster.
 - Film Detail: shows the full poster, title, your rating out of five stars, your written review, and the date you watched it. You can edit and save these details here.
 
 ## Data it keeps

@@ -5,7 +5,6 @@
 let films = []; // array of film objects loaded from storage
 let currentFilter = "all";
 let currentSort = "date";
-let pendingFilm = null; // film being confirmed before adding
 let openFilmId = null; // id of film currently shown in detail view
 let currentRating = 0; // star rating being edited in detail form
 
@@ -25,13 +24,6 @@ const searchInput = document.getElementById("search-input");
 const searchStatus = document.getElementById("search-status");
 const searchResults = document.getElementById("search-results");
 
-const addPoster = document.getElementById("add-poster");
-const addNoPoster = document.getElementById("add-no-poster");
-const addTitleEl = document.getElementById("add-title");
-const addDescEl = document.getElementById("add-desc");
-const confirmAddBtn = document.getElementById("confirm-add-btn");
-const cancelAddBtn = document.getElementById("cancel-add-btn");
-const addStatus = document.getElementById("add-status");
 
 const backBtn = document.getElementById("back-btn");
 const detailPoster = document.getElementById("detail-poster");
@@ -303,12 +295,11 @@ async function runSearch(query) {
     pickBtn.textContent = "Add";
     pickBtn.setAttribute("aria-label", "Add " + summary.title);
     pickBtn.addEventListener("click", function () {
-      pendingFilm = {
+      addFilmDirectly({
         title: summary.title,
         posterUrl: (summary.thumbnail && summary.thumbnail.source) ? summary.thumbnail.source : "",
         description: summary.description || ""
-      };
-      showAddScreen(pendingFilm);
+      }, pickBtn);
     });
     li.appendChild(pickBtn);
 
@@ -322,33 +313,14 @@ async function runSearch(query) {
   }
 }
 
-// ----- Add Film Screen -----
-function showAddScreen(film) {
-  addStatus.textContent = "";
-  addTitleEl.textContent = film.title;
-  addDescEl.textContent = film.description || "";
-  if (film.posterUrl) {
-    addPoster.src = film.posterUrl;
-    addPoster.alt = film.title + " poster";
-    addPoster.hidden = false;
-    addNoPoster.hidden = true;
-  } else {
-    addPoster.src = "";
-    addPoster.alt = "";
-    addPoster.hidden = true;
-    addNoPoster.hidden = false;
-  }
-  showScreen("add-film");
-}
-
-confirmAddBtn.addEventListener("click", async function () {
-  if (!pendingFilm) return;
-  confirmAddBtn.disabled = true;
-  addStatus.textContent = "Adding…";
+// ----- Add Film (direct, no confirmation screen) -----
+async function addFilmDirectly(picked, btn) {
+  if (btn) btn.disabled = true;
+  searchStatus.textContent = "Adding…";
   const film = {
     id: makeId(),
-    title: pendingFilm.title,
-    posterUrl: pendingFilm.posterUrl,
+    title: picked.title,
+    posterUrl: picked.posterUrl,
     watched: false,
     rating: 0,
     review: "",
@@ -358,28 +330,17 @@ confirmAddBtn.addEventListener("click", async function () {
   films.push(film);
   try {
     await workshopData.set(STORAGE_KEY, films);
-    addStatus.textContent = "Added!";
-    pendingFilm = null;
-    setTimeout(function () {
-      showScreen("movie-list");
-      searchInput.value = "";
-      searchResults.innerHTML = "";
-      searchResults.hidden = true;
-      searchStatus.textContent = "";
-      renderList();
-    }, 600);
+    searchStatus.textContent = "\"" + picked.title + "\" added to your list.";
+    searchInput.value = "";
+    searchResults.innerHTML = "";
+    searchResults.hidden = true;
+    renderList();
   } catch (err) {
     films.pop();
-    addStatus.textContent = "Could not save: " + err.message;
-  } finally {
-    confirmAddBtn.disabled = false;
+    searchStatus.textContent = "Could not save: " + err.message;
+    if (btn) btn.disabled = false;
   }
-});
-
-cancelAddBtn.addEventListener("click", function () {
-  pendingFilm = null;
-  showScreen("movie-list");
-});
+}
 
 // ----- Film Detail Screen -----
 function showDetailScreen(film) {
